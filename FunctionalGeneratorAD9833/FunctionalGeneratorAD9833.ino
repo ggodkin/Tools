@@ -25,6 +25,7 @@
 #include <Arduino.h>
 #include "PinDefinitionsAndMore.h" // Define macros for input and output pin etc.
 #include <IRremote.hpp>
+// added missing definition  || defined(__AVR_ATmega328PB__)  to @file IRTimer.hpp
 
 #include <Wire.h>
 #include <hd44780.h>						// main hd44780 header
@@ -90,6 +91,9 @@ String getMode (MD_AD9833::mode_t gMode) {
   }  
 }
 
+static MD_AD9833::channel_t nextChan;
+static MD_AD9833::channel_t currentChan = MD_AD9833::CHAN_0;
+
 signed int irDecoder( signed long ir){
   switch (ir) {
     case 0:
@@ -150,8 +154,6 @@ void setGenerator(signed long lcmd){
   debugln(lcmd);
      if (lcmd != -1) {
       if (irDecoder(lcmd) < -1) {
-        unsigned int nextChan;
-        unsigned int currentChan = AD.getMode();
         if (currentChan == MD_AD9833::CHAN_0){
           nextChan = MD_AD9833::CHAN_1;
         } else { 
